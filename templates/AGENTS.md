@@ -3,11 +3,10 @@
 <!-- Keep this file short (well under 200 lines): only what an agent cannot guess from the code.
      Generic rules belong in the shared rules, not here. -->
 
-Shared rules for every repository: [general](.claude/rules/shared/general.md),
-[TypeScript](.claude/rules/shared/typescript.md), [React](.claude/rules/shared/react.md),
-[Tailwind and shadcn](.claude/rules/shared/tailwind-shadcn.md), [tests](.claude/rules/shared/testing.md),
-[mobile PWA](.claude/rules/shared/mobile-pwa.md), [Cloudflare](.claude/rules/shared/cloudflare.md).
-Read the ones matching the files you touch. This file wins when it says otherwise.
+Shared rules for every repository are in [.claude/rules/shared/](.claude/rules/shared/) (general rules,
+then one file per language or technology, each listing in `paths:` the files it is about) and shared
+procedures in `.claude/skills/shared-*/SKILL.md`. Read the rules matching the files you touch. This file
+wins when it says otherwise.
 
 ## Product
 
@@ -29,4 +28,6 @@ Run `npm run check` and `npm run build` before considering a task done.
 
 ## Project rules
 
-<!-- Only rules specific to this repository, each with its why. -->
+<!-- Only rules specific to this repository, each with its why and a real example
+     (`see features/sky/lib/useSatelliteFeed.ts`). A rule a linter or a test can check goes
+     there instead. A repeated multi-step procedure becomes a skill in .claude/skills/. -->

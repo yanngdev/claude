@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Copies the shared agent rules (and the Claude Code format/lint hook) into a target repository.
+// Copies the shared agent rules, skills and the Claude Code format/lint hook into a target repository.
 // The copies are committed in the target, so every agent and every session (local or cloud) sees
 // them without installing anything.
 //
-//   node scripts/sync.mjs <target-dir>            copy the rules listed in <target>/.claude/rules/shared.json
+//   node scripts/sync.mjs <target-dir>            copy what <target>/.claude/rules/shared.json lists
 //   node scripts/sync.mjs <target-dir> --check    exit 1 if the copies differ from this repository
 //   node scripts/sync.mjs <target-dir> --init     first install: copy the templates too (never overwrites)
 import { execFileSync } from 'node:child_process';
@@ -13,11 +13,20 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const RULES_DIR = join(ROOT, 'rules');
+const SKILLS_DIR = join(ROOT, 'skills');
 const TEMPLATES_DIR = join(ROOT, 'templates');
 const SHARED_DIR = '.claude/rules/shared';
 const MANIFEST = `${SHARED_DIR}.json`;
+const TARGET_SKILLS_DIR = '.claude/skills';
+/** Copied skills are prefixed, so they never collide with the repository's own skills. */
+const SKILL_PREFIX = 'shared-';
 const HOOK = '.claude/hooks/format-and-lint.mjs';
-const DEFAULT_RULES = ['general', 'typescript', 'react', 'tailwind-shadcn', 'testing'];
+const DEFAULT_MANIFEST = {
+  rules: ['general', 'typescript', 'react', 'tailwind-shadcn', 'testing'],
+  skills: ['add-shadcn-component', 'update-dependencies'],
+  hook: true,
+  allowJustifiedDisable: false,
+};
 /** Template files copied by --init when the target does not have them yet. */
 const INIT_FILES = [
   ['CLAUDE.md', 'CLAUDE.md'],
@@ -48,10 +57,10 @@ function sourceVersion() {
 function readManifest() {
   const file = join(target, MANIFEST);
   if (!existsSync(file)) {
-    return { rules: DEFAULT_RULES, hook: true };
+    return DEFAULT_MANIFEST;
   }
 
-  return JSON.parse(readFileSync(file, 'utf8'));
+  return { ...DEFAULT_MANIFEST, ...JSON.parse(readFileSync(file, 'utf8')) };
 }
 
 /** The rule as written in the target: an HTML comment (stripped by Claude Code) marks its origin. */
@@ -67,13 +76,23 @@ function renderRule(name, version) {
   return frontmatter[0] + banner + content.slice(frontmatter[0].length);
 }
 
-function expectedFiles(manifest, version) {
-  const available = readdirSync(RULES_DIR).map((file) => file.replace(/\.md$/, ''));
-  const unknown = manifest.rules.filter((name) => !available.includes(name));
+function checkNames(kind, names, available) {
+  const unknown = names.filter((name) => !available.includes(name));
   if (unknown.length > 0) {
-    throw new Error(`Unknown rules: ${unknown.join(', ')}. Available: ${available.join(', ')}`);
+    throw new Error(`Unknown ${kind}: ${unknown.join(', ')}. Available: ${available.join(', ')}`);
   }
+}
+
+function expectedFiles(manifest, version) {
+  checkNames('rules', manifest.rules, readdirSync(RULES_DIR).map((file) => file.replace(/\.md$/, '')));
+  checkNames('skills', manifest.skills, readdirSync(SKILLS_DIR));
   const files = new Map(manifest.rules.map((name) => [`${SHARED_DIR}/${name}.md`, renderRule(name, version)]));
+  for (const name of manifest.skills) {
+    files.set(
+      `${TARGET_SKILLS_DIR}/${SKILL_PREFIX}${name}/SKILL.md`,
+      readFileSync(join(SKILLS_DIR, name, 'SKILL.md'), 'utf8'),
+    );
+  }
   if (manifest.hook) {
     files.set(HOOK, readFileSync(join(TEMPLATES_DIR, HOOK), 'utf8'));
   }
@@ -99,6 +118,12 @@ function check(files) {
 
 function write(files, manifest) {
   rmSync(join(target, SHARED_DIR), { recursive: true, force: true });
+  const skillsDir = join(target, TARGET_SKILLS_DIR);
+  for (const name of existsSync(skillsDir) ? readdirSync(skillsDir) : []) {
+    if (name.startsWith(SKILL_PREFIX)) {
+      rmSync(join(skillsDir, name), { recursive: true, force: true });
+    }
+  }
   for (const [path, content] of files) {
     mkdirSync(dirname(join(target, path)), { recursive: true });
     writeFileSync(join(target, path), content);

@@ -4,9 +4,9 @@ The rules for every coding agent live in [AGENTS.md](AGENTS.md): read and follow
 
 @AGENTS.md
 
-Shared rules (general, TypeScript, React…) are in `.claude/rules/shared/` and load automatically,
-some only when you touch matching files. They come from the `yanngdev/claude` repository: do not
-edit them here.
+Shared rules (`.claude/rules/shared/`) load automatically, some only when you touch matching files;
+shared skills are `.claude/skills/shared-*`. Both come from the `yanngdev/claude` repository: do
+not edit them here.
 
-Claude Code hooks (`.claude/settings.json`) format and lint every file you edit; fix the reported
-lint errors before moving on.
+The Claude Code hook (`.claude/settings.json`) formats and lints every file you edit and rejects
+comments that silence a check; fix what it reports before moving on.

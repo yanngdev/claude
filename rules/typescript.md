@@ -5,43 +5,47 @@ paths:
 
 # TypeScript
 
-## Compiler
+## Compiler _(typecheck)_
 
-- `strict`, `noUncheckedIndexedAccess`, `noFallthroughCasesInSwitch`, `noUnusedLocals`, `noUnusedParameters`.
-  An indexed access may be `undefined`: handle it, do not hide it with `!` (tolerated in tests only).
-- `verbatimModuleSyntax`: `import type` (or `type X` inside the import) for anything that is only a type.
-- `erasableSyntaxOnly`: no `enum`, `namespace` or constructor parameter properties. An enumeration is a union of
-  string literals, or an `as const` array with its derived type.
-- No `any`. Use `unknown` and narrow it.
+- `strict` and `noUncheckedIndexedAccess`: an indexed access may be `undefined`. Handle it (guard, default,
+  `.at()` + check) rather than asserting it away with `!`, which only moves the crash to runtime. `!` is fine in
+  tests.
+- `verbatimModuleSyntax`: `import type` for anything that is only a type.
+- `erasableSyntaxOnly`: no `enum`, `namespace` or constructor parameter properties, so Node can run the code by
+  stripping types. An enumeration is a union of string literals, or an `as const` array and its derived type:
+  `const LAYERS = ['stars', 'planets'] as const; type Layer = (typeof LAYERS)[number];`
+- No `any` _(lint)_: use `unknown` and narrow it.
 
 ## Data and errors
 
-- External data (JSON files, HTTP responses, storage, user input, YAML/CSV) is validated with a schema (Valibot)
-  before use, and its type is inferred from the schema (`v.InferOutput`), never written twice. Never `as` on
-  unvalidated data.
-- Throw `Error` instances (or subclasses), never literals. An expected failure is a return value, not an exception.
+- External data (JSON files, HTTP responses, storage, user input, YAML/CSV) is validated with a Valibot schema
+  before use, and its type is inferred from the schema (`v.InferOutput<typeof Schema>`), not written twice. `as` on
+  unvalidated data hides exactly the bugs the schema would catch.
+- Throw `Error` instances (or subclasses), not literals, to keep stack traces. An expected failure (a missing
+  file, an invalid form) is a return value, not an exception.
 
 ## Functions
 
 - Up to three positional parameters. Beyond that, or with several optional ones, the rest goes in a destructured
-  options object typed by a named interface, with defaults in the destructuring.
+  options object typed by a named interface, with defaults in the destructuring:
+  `loadCsv(file, schema, { header = true }: LoadCsvOptions = {})`.
 - Parameter order: context first (`db`, `i18n`, `settings`), then the processed object, then the rest.
 - A function that does two things, or grows past ~30 lines, is split into named functions.
-- Everything that does not depend on the call (constants, regexes, pure helpers) is declared at module level.
+- What does not depend on the call (constants, regexes, pure helpers) is declared at module level, so it is
+  created once and testable alone.
 
 ## Modules
 
-- Named exports only. `export default` only where a tool requires it (`vite.config.ts`, `vitest.config.ts`,
-  `playwright.config.ts`, a Worker entry). For `React.lazy`, map the named export:
-  `React.lazy(() => import('./SkyPage').then((module) => ({ default: module.SkyPage })))`.
+- Named exports only _(lint)_: they keep one name across the codebase and make renames safe. `export default` only
+  where a tool requires it (`vite.config.ts`, `vitest.config.ts`, `playwright.config.ts`, a Worker entry). For
+  `React.lazy`: `React.lazy(() => import('./SkyPage').then((module) => ({ default: module.SkyPage })))`.
 - Imports leaving the current folder use the `@/` alias (or the workspace package name); only same-folder imports
-  use `./`. Never `../`.
+  use `./`. No `../` _(lint)_, so a file can move without rewriting its imports.
 - An export used only inside its own file is not exported.
-- `lib/` modules have no React; their file names are `camelCase` or `kebab-case`, as the repository already does.
+- `lib/` modules contain no React, so their logic is testable without rendering.
 
 ## Style
 
-- Always braces for `if` / `else` / loops, even for one statement; a guard clause is
-  `if (!x) {\n  return;\n}`.
+- Braces for every `if` / `else` / loop _(lint)_; a guard clause is `if (!x) {\n  return;\n}`.
 - A blank line before every `return`, unless it is the first statement of its block.
-- `===` only; `const` by default, `let` when reassigned, never `var`.
+- `===` _(lint)_; `const` by default, `let` only when reassigned _(lint)_.
