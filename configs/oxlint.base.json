@@ -27,6 +27,8 @@
     "jsx-a11y/prefer-tag-over-role": "off",
     // A mock is type-checked where it is passed; typing every vi.fn() adds noise without catching more.
     "vitest/require-mock-type-parameters": "off",
+    // Worker.postMessage takes no target origin; the rule cannot tell a worker from a window.
+    "unicorn/require-post-message-target-origin": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-key": "error",
     "react/rules-of-hooks": "error",
