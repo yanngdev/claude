@@ -1,0 +1,69 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "jsx-a11y", "import", "unicorn", "oxc", "vitest"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "env": {
+    "browser": true,
+    "es2024": true
+  },
+  "rules": {
+    "curly": ["error", "all"],
+    "eqeqeq": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-console": "warn",
+    "typescript/no-explicit-any": "error",
+    "typescript/consistent-type-imports": "error",
+    "import/no-default-export": "error",
+    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css"] }],
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-key": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "error",
+    "react/no-multi-comp": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react",
+            "importNames": [
+              "useState",
+              "useEffect",
+              "useLayoutEffect",
+              "useMemo",
+              "useRef",
+              "useCallback",
+              "useSyncExternalStore",
+              "useReducer",
+              "useContext",
+              "useId",
+              "useTransition",
+              "useDeferredValue",
+              "use"
+            ],
+            "message": "Use the React namespace: React.useMemo, React.useEffect, ..."
+          }
+        ],
+        "patterns": [
+          {
+            "regex": "^\\.\\./",
+            "message": "Use the @/ alias instead of parent-relative imports."
+          }
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": ["dist", "dev-dist", "coverage", "node_modules", ".wrangler"],
+  "overrides": [
+    {
+      "files": ["**/vite.config.ts", "**/vitest.config.ts", "**/playwright.config.ts", "worker/**"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    }
+  ]
+}
