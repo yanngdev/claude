@@ -10,6 +10,7 @@
     "stylesheet": "./src/index.css",
     "functions": ["cn", "cva", "tv"]
   },
+  "overrides": [{ "files": ["**/*.yml", "**/*.yaml"], "options": { "singleQuote": false } }],
   "ignorePatterns": [
     "dist",
     "dev-dist",
