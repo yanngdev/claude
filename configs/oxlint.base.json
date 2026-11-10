@@ -22,6 +22,11 @@
       "warn",
       { "allow": ["**/*.css", "@testing-library/jest-dom/**", "@fontsource*/**"] }
     ],
+    // Custom ARIA widgets (combobox, segmented radios, swipeable rows) have no native element with the
+    // same behavior; preferring a semantic element stays a review rule (see the shared React rules).
+    "jsx-a11y/prefer-tag-over-role": "off",
+    // A mock is type-checked where it is passed; typing every vi.fn() adds noise without catching more.
+    "vitest/require-mock-type-parameters": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-key": "error",
     "react/rules-of-hooks": "error",

@@ -152,6 +152,10 @@ function init() {
       console.log(`- ${to} exists, kept`);
       continue;
     }
+    // A repository with its own TypeScript setup only needs the flags of the template (see the rules).
+    if (to === 'tsconfig.base.json' && existsSync(join(target, 'tsconfig.json'))) {
+      continue;
+    }
     mkdirSync(dirname(join(target, to)), { recursive: true });
     copyFileSync(join(TEMPLATES_DIR, from), join(target, to));
     console.log(`✓ ${to} (template: fill it in)`);
