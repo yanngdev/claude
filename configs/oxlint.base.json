@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "$schema": "../node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "react", "jsx-a11y", "import", "unicorn", "oxc", "vitest"],
   "categories": {
     "correctness": "error",
@@ -18,12 +18,22 @@
     "typescript/no-explicit-any": "error",
     "typescript/consistent-type-imports": "error",
     "import/no-default-export": "error",
-    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css"] }],
+    "import/no-unassigned-import": [
+      "warn",
+      { "allow": ["**/*.css", "@testing-library/jest-dom/**", "@fontsource*/**"] }
+    ],
     "react/react-in-jsx-scope": "off",
     "react/jsx-key": "error",
     "react/rules-of-hooks": "error",
     "react/exhaustive-deps": "error",
     "react/no-multi-comp": "error",
+    "react/static-components": "error",
+    "react/immutability": "error",
+    "react/globals": "error",
+    "react/refs": "error",
+    "react/purity": "error",
+    "react/set-state-in-effect": "error",
+    "react/set-state-in-render": "error",
     "no-restricted-imports": [
       "error",
       {
@@ -45,7 +55,7 @@
               "useDeferredValue",
               "use"
             ],
-            "message": "Use the React namespace: React.useMemo, React.useEffect, ..."
+            "message": "Use the React object: import React from 'react', then React.useMemo, React.useEffect, ..."
           }
         ],
         "patterns": [
@@ -60,9 +70,15 @@
   "ignorePatterns": ["dist", "dev-dist", "coverage", "node_modules", ".wrangler"],
   "overrides": [
     {
-      "files": ["**/vite.config.ts", "**/vitest.config.ts", "**/playwright.config.ts", "worker/**"],
+      "files": ["**/*.config.ts", "**/*.config.mts", "worker/**"],
       "rules": {
         "import/no-default-export": "off"
+      }
+    },
+    {
+      "files": ["scripts/**", "worker/**", "pipeline/**"],
+      "rules": {
+        "no-console": "off"
       }
     }
   ]

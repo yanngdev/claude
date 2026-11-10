@@ -23,7 +23,9 @@ français.
 | `rules/cloudflare.md`                  | Déploiement Cloudflare par intégration Git                             |
 | `skills/add-shadcn-component/`         | Procédure : ajouter et découper un composant shadcn                    |
 | `skills/update-dependencies/`          | Procédure : mettre à jour les dépendances et réparer                   |
-| `templates/`                           | `CLAUDE.md`, `AGENTS.md`, `.claude/settings.json`, hook, configs       |
+| `configs/oxlint.base.json`             | Config oxlint commune, étendue par le `.oxlintrc.json` de chaque dépôt |
+| `configs/oxfmt.base.json`              | Config oxfmt commune, importée par l’`oxfmt.config.ts` de chaque dépôt |
+| `templates/`                           | `CLAUDE.md`, `AGENTS.md`, `.claude/settings.json`, hook, `.oxlintrc.json`, `oxfmt.config.ts`, `tsconfig.base.json` |
 | `templates/scripts/`                   | `check-deps-freshness.mjs` (dépendances à jour et publiées cette année) |
 | `scripts/sync.mjs`                     | Copie règles, skills et hook dans un dépôt, ou vérifie qu’ils sont à jour |
 
@@ -42,8 +44,8 @@ Une règle qu’un outil peut vérifier va dans la config ou le hook plutôt que
 
 ## Utiliser ces règles dans un dépôt
 
-Règles, skills et hook sont **copiés et commités** dans chaque dépôt (`.claude/rules/shared/`,
-`.claude/skills/shared-*`, `.claude/hooks/`). Claude Code les charge sans import ni plugin, en local
+Règles, skills, hook et configs de base sont **copiés et commités** dans chaque dépôt
+(`.claude/rules/shared/`, `.claude/skills/shared-*`, `.claude/hooks/`, `.config/`). Claude Code les charge sans import ni plugin, en local
 comme dans les sessions cloud, qui ne chargent pas les plugins déclarés par un dépôt.
 
 Premier branchement d’un dépôt (crée aussi les modèles absents, sans rien écraser) :
@@ -65,9 +67,18 @@ valeur par défaut) :
 }
 ```
 
-Les copies doivent rester identiques à la source : ajouter `.claude/rules/shared/**`,
-`.claude/skills/shared-*/**` et `.claude/hooks/format-and-lint.mjs` aux `ignorePatterns` d’oxfmt
-(déjà fait dans le modèle), sinon le formateur les modifie et `--check` échoue.
+## Configs oxlint et oxfmt
+
+Tous les dépôts partagent la même base, copiée dans `.config/` :
+
+- `.oxlintrc.json` du dépôt : `"extends": ["./.config/oxlint.base.json"]`, puis seulement les
+  règles propres au projet (par exemple `react/immutability` coupée pour React Three Fiber),
+  chacune avec un commentaire qui dit pourquoi. Le script `lint` est `oxlint --deny-warnings`.
+- `oxfmt.config.ts` du dépôt : importe `./.config/oxfmt.base.json` et ne change que ce qui diffère
+  (fichiers ignorés, feuille de style Tailwind, alias internes pour le tri des imports).
+
+La base ignore déjà les copies (`.config/`, `.claude/rules/shared/`…), sinon le formateur les
+modifierait et `--check` échouerait.
 
 `allowJustifiedDisable: true` laisse passer dans le hook une désactivation justifiée
 (`// oxlint-disable-next-line <règle> -- <raison>`), pour les dépôts qui l’acceptent (`space`).

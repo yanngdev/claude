@@ -15,4 +15,6 @@ repository. See [README.md](README.md) (French).
   _(typecheck)_ and kept to one line. Prefer adding a check (config, hook, test) to adding prose.
 - A multi-step procedure is a skill (`skills/<name>/SKILL.md`, `name: shared-<name>`), not a rule: it only loads
   when its `description` matches the task.
+- `configs/` holds the base oxlint and oxfmt configs every repository extends: a rule goes there only when every
+  repository can follow it; a project-specific exception stays in that repository's config, with a comment.
 - After changing `scripts/sync.mjs` or the hook, run them against a scratch directory (`--init`, then `--check`).

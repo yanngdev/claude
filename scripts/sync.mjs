@@ -4,6 +4,7 @@
 // them without installing anything.
 //
 //   node scripts/sync.mjs <target-dir>            copy what <target>/.claude/rules/shared.json lists
+//                                                 (rules, skills, the hook, the base oxlint / oxfmt configs)
 //   node scripts/sync.mjs <target-dir> --check    exit 1 if the copies differ from this repository
 //   node scripts/sync.mjs <target-dir> --init     first install: copy the templates too (never overwrites)
 import { execFileSync } from 'node:child_process';
@@ -14,6 +15,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const RULES_DIR = join(ROOT, 'rules');
 const SKILLS_DIR = join(ROOT, 'skills');
+const CONFIGS_DIR = join(ROOT, 'configs');
+/** Shared tool configs, extended by the target's .oxlintrc.json and oxfmt.config.ts. */
+const TARGET_CONFIGS_DIR = '.config';
 const TEMPLATES_DIR = join(ROOT, 'templates');
 const SHARED_DIR = '.claude/rules/shared';
 const MANIFEST = `${SHARED_DIR}.json`;
@@ -25,6 +29,7 @@ const DEFAULT_MANIFEST = {
   rules: ['general', 'typescript', 'react', 'tailwind-shadcn', 'testing'],
   skills: ['add-shadcn-component', 'update-dependencies'],
   hook: true,
+  configs: true,
   allowJustifiedDisable: false,
 };
 /** Template files copied by --init when the target does not have them yet. */
@@ -32,8 +37,8 @@ const INIT_FILES = [
   ['CLAUDE.md', 'CLAUDE.md'],
   ['AGENTS.md', 'AGENTS.md'],
   ['.claude/settings.json', '.claude/settings.json'],
-  ['configs/.oxlintrc.json', '.oxlintrc.json'],
-  ['configs/.oxfmtrc.json', '.oxfmtrc.json'],
+  ['.oxlintrc.json', '.oxlintrc.json'],
+  ['oxfmt.config.ts', 'oxfmt.config.ts'],
   ['configs/tsconfig.base.json', 'tsconfig.base.json'],
 ];
 
@@ -92,6 +97,12 @@ function expectedFiles(manifest, version) {
       `${TARGET_SKILLS_DIR}/${SKILL_PREFIX}${name}/SKILL.md`,
       readFileSync(join(SKILLS_DIR, name, 'SKILL.md'), 'utf8'),
     );
+  }
+  if (manifest.configs) {
+    for (const name of readdirSync(CONFIGS_DIR)) {
+      // The $schema path is relative to the copy, one folder below node_modules.
+      files.set(`${TARGET_CONFIGS_DIR}/${name}`, readFileSync(join(CONFIGS_DIR, name), 'utf8'));
+    }
   }
   if (manifest.hook) {
     files.set(HOOK, readFileSync(join(TEMPLATES_DIR, HOOK), 'utf8'));

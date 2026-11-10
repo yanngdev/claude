@@ -1,21 +1,21 @@
 {
-  "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "printWidth": 120,
+  "tabWidth": 2,
   "semi": true,
   "singleQuote": true,
   "jsxSingleQuote": false,
-  "tabWidth": 2,
   "trailingComma": "all",
   "sortImports": { "newlinesBetween": false, "internalPattern": ["@/"] },
   "sortTailwindcss": {
     "stylesheet": "./src/index.css",
-    "functions": ["cn", "cva"]
+    "functions": ["cn", "cva", "tv"]
   },
   "ignorePatterns": [
     "dist",
     "dev-dist",
     "coverage",
     "package-lock.json",
+    ".config/**",
     ".claude/rules/shared/**",
     ".claude/skills/shared-*/**",
     ".claude/hooks/format-and-lint.mjs"
