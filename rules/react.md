@@ -16,9 +16,10 @@ paths:
 
 ## React API
 
-- Use the namespace: `import * as React from 'react'`, then `React.useState`, `React.ComponentProps<…>`,
-  `React.ReactNode` (`import type * as React` when only types are used). No named imports from `'react'` _(lint)_:
-  one import line per file, and hooks are easy to spot.
+- Go through the `React` object: `import React from 'react'`, then `React.useState`, `React.ComponentProps<…>`,
+  `React.ReactNode` (`import type React from 'react'` when only types are used). No named imports from `'react'`
+  _(lint)_: one import line per file, and hooks are easy to spot. (`import * as React` is flagged by the same lint
+  rule, so it is not used either.)
 - List every hook dependency _(lint)_. When that is inconvenient, restructure: derive the value during render,
   memoize with `React.useMemo`, keep the latest handler in a ref (see a `useLatest` / `useKeyDown` hook), read
   non-reactive state through a getter, create and dispose a resource in the same effect.

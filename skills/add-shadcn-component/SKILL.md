@@ -11,7 +11,8 @@ description: Add a shadcn/ui component to the repository (Dialog, Select, Sheetâ
    Base UI, see `package.json`).
 3. Split the generated file: one component per file, named after it in PascalCase (`Dialog.tsx`,
    `DialogContent.tsx`, `DialogTitle.tsx`â€¦), each an `export function`. Imports between them use the `@/` alias.
-4. Apply the React rules: `React` namespace instead of named imports from `'react'`, no `export default`.
+4. Apply the React rules: `import React from 'react'` (or `import type React`) and `React.xxx` instead of named
+   imports from `'react'`, no `export default`.
 5. Remove the variants, sizes and sub-components nothing uses yet.
 6. User-facing strings shipped by shadcn (`Close`, `sr-only` labels) are translated to the UI language.
 7. Run the repository's checks (`npm run check` or lint, format, typecheck, tests).

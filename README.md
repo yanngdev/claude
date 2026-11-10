@@ -65,6 +65,10 @@ valeur par défaut) :
 }
 ```
 
+Les copies doivent rester identiques à la source : ajouter `.claude/rules/shared/**`,
+`.claude/skills/shared-*/**` et `.claude/hooks/format-and-lint.mjs` aux `ignorePatterns` d’oxfmt
+(déjà fait dans le modèle), sinon le formateur les modifie et `--check` échoue.
+
 `allowJustifiedDisable: true` laisse passer dans le hook une désactivation justifiée
 (`// oxlint-disable-next-line <règle> -- <raison>`), pour les dépôts qui l’acceptent (`space`).
 

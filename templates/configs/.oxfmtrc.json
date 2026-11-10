@@ -11,5 +11,13 @@
     "stylesheet": "./src/index.css",
     "functions": ["cn", "cva"]
   },
-  "ignorePatterns": ["dist", "dev-dist", "coverage", "package-lock.json"]
+  "ignorePatterns": [
+    "dist",
+    "dev-dist",
+    "coverage",
+    "package-lock.json",
+    ".claude/rules/shared/**",
+    ".claude/skills/shared-*/**",
+    ".claude/hooks/format-and-lint.mjs"
+  ]
 }

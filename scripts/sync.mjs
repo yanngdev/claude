@@ -129,7 +129,10 @@ function write(files, manifest) {
     writeFileSync(join(target, path), content);
     console.log(`✓ ${path}`);
   }
-  writeFileSync(join(target, MANIFEST), `${JSON.stringify(manifest, null, 2)}\n`);
+  // The manifest belongs to the target once it exists (and its formatter may reformat it).
+  if (!existsSync(join(target, MANIFEST))) {
+    writeFileSync(join(target, MANIFEST), `${JSON.stringify(manifest, null, 2)}\n`);
+  }
 }
 
 function init() {
