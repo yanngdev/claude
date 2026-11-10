@@ -42,7 +42,8 @@ paths:
 - Imports leaving the current folder use the `@/` alias (or the workspace package name); only same-folder imports
   use `./`. No `../` _(lint)_, so a file can move without rewriting its imports.
 - An export used only inside its own file is not exported.
-- `lib/` modules contain no React, so their logic is testable without rendering.
+- Rules, maths and parsing live in pure functions outside components and hooks, so they are tested without
+  rendering.
 
 ## Style
 

@@ -95,18 +95,3 @@ configuration de l’environnement, pas dans les instructions.
   hook et réduire la règle à une ligne _(lint)_.
 - Donner la raison et un exemple plutôt que des majuscules : les modèles actuels suivent les
   consignes à la lettre, et l’insistance les pousse à en faire trop.
-
-## Choix faits là où mes dépôts divergeaient
-
-- **React par namespace** (`React.useState`) : `arcade`, `atlas`, `wgcompris` le font ; `space` et
-  `pantry-pal` utilisent des imports nommés et seront à migrer (ou à surcharger dans leur
-  `AGENTS.md`).
-- **Exports nommés uniquement** : `space` a des `export default` pour `React.lazy`, la règle donne
-  la forme `.then((module) => ({ default: module.X }))`.
-- **Désactivation de règle** : interdite dans `arcade`, `atlas`, `wgcompris` ; acceptée avec une
-  raison dans `space` (`allowJustifiedDisable`).
-- **Guillemets simples, 120 colonnes** dans le modèle oxfmt (majorité) ; `atlas` (doubles, 100) et
-  `space` (100) gardent leur config, c’est le formateur qui fait foi.
-- **Arborescence** : pas imposée par les règles communes (`features/<f>/ui|lib` dans `space` et
-  `pantry-pal`, `components/` + `lib/` + `hooks/` dans `arcade` et `wgcompris`) ; chaque
-  `AGENTS.md` décrit la sienne.
