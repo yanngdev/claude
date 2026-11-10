@@ -27,7 +27,7 @@ const SKILL_PREFIX = 'shared-';
 const HOOK = '.claude/hooks/format-and-lint.mjs';
 const DEFAULT_MANIFEST = {
   rules: ['general', 'typescript', 'react', 'tailwind-shadcn', 'testing'],
-  skills: ['add-shadcn-component', 'update-dependencies'],
+  skills: ['add-shadcn-component', 'update-dependencies', 'setup-rtk'],
   hook: true,
   configs: true,
   allowJustifiedDisable: false,

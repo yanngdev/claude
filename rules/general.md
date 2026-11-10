@@ -47,6 +47,12 @@ the tools will tell you, the marker only says why the error exists. The other ru
   tests, build) and fix what fails. Report what you could not fix, with the output.
 - Do not skip, delete or weaken a test to get green: a red test is information.
 
+## Shell output (rtk)
+
+- Where rtk is installed (`rtk gain` works), its hook compacts shell output: run commands as usual, without typing
+  `rtk`. When the compact output hides what you need, rerun with `rtk bypass <command>`; a cut output names where
+  the full one is. Set rtk up only when asked (skill `shared-setup-rtk`).
+
 ## Git
 
 - Small commits with an imperative English message saying what changed and why; Conventional Commits

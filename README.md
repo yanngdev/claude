@@ -23,6 +23,7 @@ français.
 | `rules/cloudflare.md`                  | Déploiement Cloudflare par intégration Git                             |
 | `skills/add-shadcn-component/`         | Procédure : ajouter et découper un composant shadcn                    |
 | `skills/update-dependencies/`          | Procédure : mettre à jour les dépendances et réparer                   |
+| `skills/setup-rtk/`                    | Procédure : installer rtk et son hook, en local ou dans un environnement cloud |
 | `configs/oxlint.base.json`             | Config oxlint commune, étendue par le `.oxlintrc.json` de chaque dépôt |
 | `configs/oxfmt.base.json`              | Config oxfmt commune, importée par l’`oxfmt.config.ts` de chaque dépôt |
 | `templates/`                           | `CLAUDE.md`, `AGENTS.md`, `.claude/settings.json`, hook, `.oxlintrc.json`, `oxfmt.config.ts`, `tsconfig.base.json` |
@@ -61,7 +62,7 @@ valeur par défaut) :
 ```json
 {
   "rules": ["general", "typescript", "react", "tailwind-shadcn", "testing", "mobile-pwa"],
-  "skills": ["add-shadcn-component", "update-dependencies"],
+  "skills": ["add-shadcn-component", "update-dependencies", "setup-rtk"],
   "hook": true,
   "allowJustifiedDisable": false
 }
@@ -101,6 +102,20 @@ spécifiques avec un exemple réel) et l’emporte sur les règles communes ; `C
 
 Pour les sessions cloud, l’installation des dépendances (`npm ci`) va dans le script de
 configuration de l’environnement, pas dans les instructions.
+
+## rtk (sortie des commandes compressée)
+
+[rtk](https://github.com/rtk-ai/rtk) réduit la sortie des commandes shell (tests, git, builds) avant que
+l’agent la lise. Son hook Claude Code s’enregistre dans `~/.claude/settings.json` : il s’installe une
+fois par machine ou par environnement cloud, pas dans chaque dépôt. La marche à suivre est dans le skill
+[`setup-rtk`](skills/setup-rtk/SKILL.md) :
+
+- **en local** : `brew install rtk` (ou le script d’installation officiel), puis `rtk init -g` ;
+- **en cloud** : les lignes du skill vont dans le script de configuration de l’environnement, qui
+  l’installe avant chaque nouvelle session. Demander à Claude « installe rtk dans cet environnement »
+  suffit : il propose la modification à valider.
+
+`rules/general.md` dit à l’agent comment s’en servir (rien à taper, `rtk bypass` pour la sortie complète).
 
 ## Faire vivre les règles
 
