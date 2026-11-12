@@ -20,7 +20,8 @@ wins when it says otherwise.
 | `npm run check`  | Lint, format check, typecheck, tests |
 | `npm run build`  | Production build                     |
 
-Run `npm run check` and `npm run build` before considering a task done.
+Run `npm run check` and `npm run build` before considering a task done. oxfmt owns formatting: do not reformat
+by hand, only run `npm run format` when `npm run check` reports a formatting error.
 
 ## Layout
 
