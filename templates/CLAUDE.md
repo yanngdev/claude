@@ -8,5 +8,6 @@ Shared rules (`.claude/rules/shared/`) load automatically, some only when you to
 shared skills are `.claude/skills/shared-*`. Both come from the `yanngdev/claude` repository: do
 not edit them here.
 
-The Claude Code hook (`.claude/settings.json`) formats and lints every file you edit and rejects
-comments that silence a check; fix what it reports before moving on.
+The Claude Code hook (`.claude/settings.json`) runs oxfmt and oxlint on every file you edit and rejects
+comments that silence a check. oxfmt owns formatting, so do not reformat files yourself: fix what the hook
+reports (lint, silencers, a formatting error) and move on.

@@ -38,10 +38,21 @@ français.
 2. **Skills** (`skills/`) : procédures en plusieurs étapes, chargées seulement quand la tâche
    correspond à leur `description`.
 3. **Harness** (`templates/.claude/`) : ce que Claude Code impose quoi qu’il arrive. Le hook formate
-   et lint chaque fichier modifié, et refuse les commentaires qui font taire une vérification
+   (oxfmt) et lint (oxlint) chaque fichier modifié, et refuse les commentaires qui font taire une vérification
    (`oxlint-disable`, `@ts-ignore`…). Les configs oxlint / tsconfig font de même en CI.
 
 Une règle qu’un outil peut vérifier va dans la config ou le hook plutôt que dans le texte.
+
+### Économie de tokens
+
+- **TypeScript standard** : `rules/typescript.md` (section « Plain TypeScript ») demande le TypeScript
+  que les modèles maîtrisent le mieux, avec le moins de code et d’annotations possible : inférence plutôt
+  qu’annotations, pas de types alambiqués, la plateforme plutôt que des helpers maison. Avec la règle
+  « plus petite solution qui marche » de `rules/general.md`, c’est le levier principal.
+- **oxfmt gère la mise en forme** : le hook le lance après chaque modification, et `rules/general.md`
+  dit à l’agent de ne ni reformater ni relire pour ajuster la mise en page tant que `format:check` ou le
+  hook ne remonte pas d’erreur.
+- **rtk** compresse la sortie des commandes (voir plus bas).
 
 ## Utiliser ces règles dans un dépôt
 
@@ -64,6 +75,7 @@ valeur par défaut) :
   "rules": ["general", "typescript", "react", "tailwind-shadcn", "testing", "mobile-pwa"],
   "skills": ["add-shadcn-component", "update-dependencies", "setup-rtk"],
   "hook": true,
+  "configs": true,
   "allowJustifiedDisable": false
 }
 ```

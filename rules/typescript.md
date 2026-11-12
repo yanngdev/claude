@@ -5,6 +5,16 @@ paths:
 
 # TypeScript
 
+## Plain TypeScript
+
+- Write standard, idiomatic TypeScript, the kind models know best, with as little code and as few annotations as
+  possible: fewer tokens to write and read, fewer places to be wrong.
+- Let inference work: annotate the parameters of exported functions and data shapes at boundaries; leave locals,
+  callbacks, constants, React state and obvious return types alone (`const name = 'Vega'`, not `: string`).
+- No type-level gymnastics (conditional, mapped or recursive types, overload stacks, branded types) and no generic
+  without a second use: a plain `interface` or union says the same thing. No decorators or home-made DSLs.
+- Prefer the platform and well-known libraries (`Array` methods, `Intl`, `fetch`, `structuredClone`) to helpers.
+
 ## Compiler _(typecheck)_
 
 - `strict` and `noUncheckedIndexedAccess`: an indexed access may be `undefined`. Handle it (guard, default,
@@ -32,7 +42,7 @@ paths:
   options object typed by a named interface, with defaults in the destructuring:
   `loadCsv(file, schema, { header = true }: LoadCsvOptions = {})`.
 - Parameter order: context first (`db`, `i18n`, `settings`), then the processed object, then the rest.
-- A function that does two things, or grows past ~30 lines, is split into named functions.
+- A function that does two things, or grows past ~30 lines, is split.
 - What does not depend on the call (constants, regexes, pure helpers) is declared at module level, so it is
   created once and testable alone.
 
