@@ -1,13 +1,6 @@
 # claude
 
-Base commune des instructions pour les agents de code (Claude Code d’abord, mais lisible par
-Codex, Cursor, Copilot…) de tous mes dépôts : règles de style par langage et par techno, skills
-partagés, modèles de `CLAUDE.md` / `AGENTS.md`, réglages et hook Claude Code, configs oxlint /
-oxfmt / tsconfig.
-
-Les règles sont tirées de ce que mes dépôts (`arcade`, `atlas`, `pantry-pal`, `space`,
-`wgcompris`) avaient en commun. Elles sont en anglais (comme le code) ; seul ce README est en
-français.
+Base commune des instructions pour les agents de code.
 
 ## Contenu
 
